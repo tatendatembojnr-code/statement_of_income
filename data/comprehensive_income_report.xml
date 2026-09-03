@@ -3,9 +3,10 @@
     <data noupdate="0">
         <record id="comprehensive_income_report" model="account.report">
             <field name="name">STATEMENT OF COMPREHENSIVE INCOME</field>
+            <field name="filter_unfold_all" eval="True"/>
         </record>
 
-        <!-- 1. INSURANCE REVENUE -->
+        <!-- 1. INSURANCE REVENUE - fallback: all income accounts -->
         <record id="comp_inc_line_revenue" model="account.report.line">
             <field name="name">INSURANCE REVENUE</field>
             <field name="code">comp_inc_line_revenue</field>
@@ -23,7 +24,7 @@
             </field>
         </record>
 
-        <!-- 2. INSURANCE SERVICE EXPENSES -->
+        <!-- 2. INSURANCE SERVICE EXPENSES - fallback: all expense accounts -->
         <record id="comp_inc_line_expenses" model="account.report.line">
             <field name="name">INSURANCE SERVICE EXPENSES</field>
             <field name="code">comp_inc_line_expenses</field>
@@ -35,13 +36,13 @@
                 <record id="comp_inc_exp_expenses" model="account.report.expression">
                     <field name="label">balance</field>
                     <field name="engine">domain</field>
-                    <field name="formula">[('account_id.comprehensive_income_category', '=', 'insurance_service_expenses')]</field>
+                    <field name="formula">['|', ('account_id.comprehensive_income_category', '=', 'insurance_service_expenses'), '&amp;', ('account_id.comprehensive_income_category', '=', False), ('account_id.account_type', 'in', ('expense', 'expense_depreciation', 'expense_direct_cost'))]</field>
                     <field name="subformula">sum</field>
                 </record>
             </field>
         </record>
 
-        <!-- 3. INSURANCE SERVICE RESULT -->
+        <!-- 3. INSURANCE SERVICE RESULT (calculated) -->
         <record id="comp_inc_line_service_result" model="account.report.line">
             <field name="name">INSURANCE SERVICE RESULT</field>
             <field name="code">comp_inc_line_service_result</field>
@@ -57,7 +58,7 @@
             </field>
         </record>
 
-        <!-- 4. INVESTMENT INCOME -->
+        <!-- 4. INVESTMENT INCOME - only shows if category is set -->
         <record id="comp_inc_line_investment" model="account.report.line">
             <field name="name">INVESTMENT INCOME</field>
             <field name="code">comp_inc_line_investment</field>
@@ -77,7 +78,7 @@
 
         <!-- 5. NET INSURANCE FINANCE EXPENSES -->
         <record id="comp_inc_line_finance_exp" model="account.report.line">
-            <field name="name">Net insurance finance expenses (discount unwind, etc.)</field>
+            <field name="name">Net insurance finance expenses</field>
             <field name="code">comp_inc_line_finance_exp</field>
             <field name="report_id" ref="comprehensive_income_report"/>
             <field name="sequence">50</field>
@@ -111,7 +112,7 @@
             </field>
         </record>
 
-        <!-- 7. NET INVESTMENT AND FINANCIAL RESULT -->
+        <!-- 7. NET INVESTMENT AND FINANCIAL RESULT (calculated) -->
         <record id="comp_inc_line_net_inv_result" model="account.report.line">
             <field name="name">NET INVESTMENT AND FINANCIAL RESULT</field>
             <field name="code">comp_inc_line_net_inv_result</field>
@@ -127,7 +128,7 @@
             </field>
         </record>
 
-        <!-- 8. OPERATING EXPENSES -->
+        <!-- 8. OPERATING EXPENSES - fallback: all expense accounts -->
         <record id="comp_inc_line_operating" model="account.report.line">
             <field name="name">OPERATING EXPENSES</field>
             <field name="code">comp_inc_line_operating</field>
@@ -145,7 +146,7 @@
             </field>
         </record>
 
-        <!-- 9. SURPLUS BEFORE TAX -->
+        <!-- 9. SURPLUS BEFORE TAX (calculated) -->
         <record id="comp_inc_line_surplus_before_tax" model="account.report.line">
             <field name="name">SURPLUS BEFORE TAX</field>
             <field name="code">comp_inc_line_surplus_before_tax</field>
@@ -179,7 +180,7 @@
             </field>
         </record>
 
-        <!-- 11. SURPLUS FOR THE PERIOD -->
+        <!-- 11. SURPLUS FOR THE PERIOD (calculated) -->
         <record id="comp_inc_line_surplus_period" model="account.report.line">
             <field name="name">SURPLUS FOR THE PERIOD</field>
             <field name="code">comp_inc_line_surplus_period</field>
@@ -213,7 +214,7 @@
             </field>
         </record>
 
-        <!-- 13. TOTAL COMPREHENSIVE SURPLUS/(DEFICIT) -->
+        <!-- 13. TOTAL COMPREHENSIVE SURPLUS/(DEFICIT) (calculated) -->
         <record id="comp_inc_line_total_surplus" model="account.report.line">
             <field name="name">TOTAL COMPREHENSIVE SURPLUS/(DEFICIT) FOR THE PERIOD</field>
             <field name="code">comp_inc_line_total_surplus</field>
